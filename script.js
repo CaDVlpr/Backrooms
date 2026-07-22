@@ -1,222 +1,163 @@
-const video = document.getElementById("video");
-
-const videoURL = "https://drive.google.com/file/d/1AevCyt-osqPDQdu4zV2cL1A7MiBq6pFY/view?usp=sharing";
-
-video.src = videoURL;
+const video=document.getElementById("video");
 
 
-
-const play = document.getElementById("play");
-const back = document.getElementById("back");
-const forward = document.getElementById("forward");
-
-const mute = document.getElementById("mute");
-const volume = document.getElementById("volume");
-
-const fullscreen = document.getElementById("fullscreen");
-const pip = document.getElementById("pip");
-
-const progress = document.querySelector(".progress");
-const progressFilled = document.querySelector(".progress-filled");
-
-const time = document.getElementById("time");
+video.src =
+"https://drive.google.com/uc?export=download&id=1AevCyt-osqPDQdu4zV2cL1A7MiBq6pFY";
 
 
+const play=document.getElementById("play");
+const back=document.getElementById("back");
+const forward=document.getElementById("forward");
 
-// PLAY PAUSE
+const mute=document.getElementById("mute");
+const volume=document.getElementById("volume");
 
-play.onclick = () => {
+const speed=document.getElementById("speed");
+const pip=document.getElementById("pip");
 
-    if(video.paused){
+const progress=document.querySelector(".progress");
+const filled=document.querySelector(".progress-filled");
 
-        video.play();
-        play.innerHTML = '<i data-lucide="pause"></i>';
+const time=document.getElementById("time");
 
-    }
-    else{
 
-        video.pause();
-        play.innerHTML = '<i data-lucide="play"></i>';
 
-    }
+play.onclick=()=>{
 
-    lucide.createIcons();
+if(video.paused){
+video.play();
+play.innerHTML='<i data-lucide="pause"></i>';
+}
+else{
+video.pause();
+play.innerHTML='<i data-lucide="play"></i>';
+}
+
+lucide.createIcons();
 
 };
 
 
 
-// SKIP
+video.ontimeupdate=()=>{
 
-back.onclick = () => {
+let percent=
+(video.currentTime/video.duration)*100;
 
-    video.currentTime -= 10;
-
-};
-
-
-forward.onclick = () => {
-
-    video.currentTime += 10;
-
-};
+filled.style.width=percent+"%";
 
 
-
-// TIME
-
-video.ontimeupdate = () => {
-
-    let percent =
-    (video.currentTime / video.duration) * 100;
-
-    progressFilled.style.width = percent + "%";
+time.textContent=
+format(video.currentTime)
++" / "+
+format(video.duration);
 
 
-    time.textContent =
-    format(video.currentTime)
-    +" / "+
-    format(video.duration);
-
-
-    localStorage.videoTime =
-    video.currentTime;
+localStorage.setItem(
+"position",
+video.currentTime
+);
 
 };
 
 
 
-function format(seconds){
+video.onloadedmetadata=()=>{
 
-    if(isNaN(seconds))
-    return "0:00";
+let saved=
+localStorage.getItem("position");
 
+if(saved)
+video.currentTime=saved;
 
-    let mins =
-    Math.floor(seconds/60);
-
-    let secs =
-    Math.floor(seconds%60);
+};
 
 
-    if(secs < 10)
-    secs="0"+secs;
 
+function format(t){
 
-    return mins+":"+secs;
+if(isNaN(t)) return "0:00";
+
+let m=Math.floor(t/60);
+let s=Math.floor(t%60);
+
+if(s<10)s="0"+s;
+
+return m+":"+s;
 
 }
 
 
 
-// RESUME POSITION
+progress.onclick=e=>{
 
-video.onloadedmetadata = () => {
+let width=progress.offsetWidth;
 
-    if(localStorage.videoTime){
-
-        video.currentTime =
-        localStorage.videoTime;
-
-    }
+video.currentTime=
+(e.offsetX/width)*video.duration;
 
 };
 
 
 
-// SEEK
-
-progress.onclick = e => {
-
-    let width =
-    progress.offsetWidth;
+back.onclick=()=>{
+video.currentTime-=10;
+};
 
 
-    let click =
-    e.offsetX;
+forward.onclick=()=>{
+video.currentTime+=10;
+};
 
 
-    video.currentTime =
-    (click / width) * video.duration;
+
+volume.oninput=()=>{
+
+video.volume=volume.value;
 
 };
 
 
 
-// VOLUME
+mute.onclick=()=>{
 
-volume.oninput = () => {
-
-    video.volume =
-    volume.value;
+video.muted=!video.muted;
 
 };
 
 
 
-// MUTE
+speed.onclick=()=>{
 
-mute.onclick = () => {
-
-    video.muted =
-    !video.muted;
+video.playbackRate =
+video.playbackRate===1 ? 2 : 1;
 
 };
 
 
 
-// SPEED
+pip.onclick=async()=>{
 
-document.getElementById("speed").onclick = () => {
-
-    video.playbackRate =
-    video.playbackRate === 1
-    ? 2
-    : 1;
+if(document.pictureInPictureEnabled)
+await video.requestPictureInPicture();
 
 };
 
 
 
-// FULLSCREEN
+document.onkeydown=e=>{
 
-fullscreen.onclick = () => {
-
-    video.requestFullscreen();
-
-};
-
+if(e.code==="Space"){
+e.preventDefault();
+play.click();
+}
 
 
-// PICTURE IN PICTURE
-
-pip.onclick = async()=>{
-
-    await video.requestPictureInPicture();
-
-};
+if(e.key==="ArrowRight")
+video.currentTime+=5;
 
 
-
-// KEYBOARD
-
-document.onkeydown = e => {
-
-
-    if(e.code==="Space"){
-
-        e.preventDefault();
-        play.click();
-
-    }
-
-
-    if(e.key==="ArrowRight")
-    video.currentTime +=5;
-
-
-    if(e.key==="ArrowLeft")
-    video.currentTime -=5;
-
+if(e.key==="ArrowLeft")
+video.currentTime-=5;
 
 };
