@@ -1,1 +1,126 @@
+* {
+    box-sizing: border-box;
+}
 
+
+body {
+    margin: 0;
+    background: #111;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+}
+
+
+.player {
+
+    width: 90%;
+    max-width: 1200px;
+    background: black;
+    position: relative;
+}
+
+
+video {
+
+    width: 100%;
+    display: block;
+}
+
+
+
+.controls {
+
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 12px;
+    background: rgba(0,0,0,.75);
+
+}
+
+
+
+.progress {
+
+    height: 6px;
+    background: #555;
+    cursor: pointer;
+
+}
+
+
+.progress-filled {
+
+    height: 100%;
+    width: 0%;
+    background: white;
+
+}
+
+
+
+.bottom {
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+}
+
+
+.left,
+.right {
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+}
+
+
+
+button {
+
+    background:none;
+    border:none;
+    color:white;
+    cursor:pointer;
+
+}
+
+
+
+button svg {
+
+    width:24px;
+    height:24px;
+
+}
+
+
+
+button:hover {
+
+    opacity:.6;
+
+}
+
+
+
+#time {
+
+    color:white;
+    font-size:14px;
+
+}
+
+
+
+input[type="range"] {
+
+    width:100px;
+
+}
