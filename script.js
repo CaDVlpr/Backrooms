@@ -1,84 +1,81 @@
 const video = document.getElementById("video");
 
 
-// YOUR GOOGLE DRIVE VIDEO
-
+// GOOGLE DRIVE VIDEO
 video.src =
 "https://drive.google.com/uc?export=download&id=1AevCyt-osqPDQdu4zV2cL1A7MiBq6pFY";
 
 
+// ELEMENTS
 
-const play =
-document.getElementById("play");
+const play = document.getElementById("play");
+const back = document.getElementById("back");
+const forward = document.getElementById("forward");
 
-const back =
-document.getElementById("back");
+const mute = document.getElementById("mute");
+const volume = document.getElementById("volume");
 
-const forward =
-document.getElementById("forward");
+const speed = document.getElementById("speed");
+const speedText = document.getElementById("speedText");
 
-const mute =
-document.getElementById("mute");
+const pip = document.getElementById("pip");
+const fullscreen = document.getElementById("fullscreen");
 
-const volume =
-document.getElementById("volume");
+const progress = document.querySelector(".progress");
+const progressFilled = document.querySelector(".progress-filled");
 
-const speed =
-document.getElementById("speed");
-
-const pip =
-document.getElementById("pip");
-
-const fullscreen =
-document.getElementById("fullscreen");
-
-const progress =
-document.querySelector(".progress");
-
-const progressFilled =
-document.querySelector(".progress-filled");
-
-const time =
-document.getElementById("time");
+const time = document.getElementById("time");
 
 
 
+// SPEEDS
 
-// PLAY BUTTON
+const speeds = [
+0.5,
+0.75,
+1,
+1.25,
+1.5,
+2
+];
 
-play.onclick = ()=>{
-
-if(video.paused){
-
-video.play();
-
-play.innerHTML =
-'<i data-lucide="pause"></i>';
-
-}
-
-else{
-
-video.pause();
-
-play.innerHTML =
-'<i data-lucide="play"></i>';
-
-}
+let speedIndex = 2;
 
 
-lucide.createIcons();
+
+// PLAY / PAUSE
+
+play.onclick = () => {
+
+    if(video.paused){
+
+        video.play();
+
+        play.innerHTML =
+        '<i data-lucide="pause"></i>';
+
+    }
+    else{
+
+        video.pause();
+
+        play.innerHTML =
+        '<i data-lucide="play"></i>';
+
+    }
+
+    lucide.createIcons();
 
 };
 
 
 
 
-// AUTO PLAY WHEN LOADED
+// AUTO PLAY WHEN READY
 
-video.onloadeddata = ()=>{
+video.onloadeddata = () => {
 
-video.play().catch(()=>{});
+    video.play().catch(()=>{});
 
 };
 
@@ -87,36 +84,58 @@ video.play().catch(()=>{});
 
 // TIME UPDATE
 
-video.ontimeupdate = ()=>{
+video.ontimeupdate = () => {
 
 
-if(!video.duration)
-return;
+    if(!video.duration)
+    return;
 
 
-let percent =
-(video.currentTime /
-video.duration) * 100;
+    let percent =
+    (video.currentTime / video.duration) * 100;
 
 
-progressFilled.style.width =
-percent+"%";
+    progressFilled.style.width =
+    percent + "%";
 
 
-time.textContent =
-format(video.currentTime)
-+
-" / "
-+
-format(video.duration);
+    time.textContent =
+    format(video.currentTime)
+    +
+    " / "
+    +
+    format(video.duration);
 
 
 
-localStorage.setItem(
-"video-position",
-video.currentTime
-);
+    localStorage.setItem(
+        "video-position",
+        video.currentTime
+    );
 
+
+};
+
+
+
+
+// LOAD SAVED TIME
+
+video.onloadedmetadata = () => {
+
+
+    let saved =
+    localStorage.getItem(
+        "video-position"
+    );
+
+
+    if(saved){
+
+        video.currentTime =
+        Number(saved);
+
+    }
 
 };
 
@@ -126,96 +145,81 @@ video.currentTime
 
 function format(seconds){
 
-if(isNaN(seconds))
-return "0:00";
+    if(isNaN(seconds))
+    return "0:00";
 
 
-let min =
-Math.floor(seconds/60);
+    let minutes =
+    Math.floor(seconds / 60);
 
 
-let sec =
-Math.floor(seconds%60);
+    let secs =
+    Math.floor(seconds % 60);
 
 
-if(sec < 10)
-sec="0"+sec;
+    if(secs < 10)
+    secs = "0" + secs;
 
 
-return min+":"+sec;
-
-}
-
-
-
-
-// LOAD LAST POSITION
-
-video.onloadedmetadata = ()=>{
-
-let saved =
-localStorage.getItem(
-"video-position"
-);
-
-
-if(saved){
-
-video.currentTime =
-Number(saved);
+    return minutes + ":" + secs;
 
 }
-
-};
-
-
-
-
-// SEEK
-
-progress.onclick=(e)=>{
-
-
-let width =
-progress.clientWidth;
-
-
-video.currentTime =
-(e.offsetX / width)
-*
-video.duration;
-
-
-};
-
 
 
 
 
 // SKIP
 
-back.onclick=()=>{
+back.onclick = () => {
 
-video.currentTime-=10;
+    video.currentTime -= 10;
+
+};
+
+
+
+forward.onclick = () => {
+
+    video.currentTime += 10;
 
 };
 
 
-forward.onclick=()=>{
 
-video.currentTime+=10;
+
+// PROGRESS BAR
+
+progress.onclick = (e) => {
+
+
+    let width =
+    progress.clientWidth;
+
+
+    let click =
+    e.offsetX;
+
+
+    video.currentTime =
+    (click / width)
+    *
+    video.duration;
+
 
 };
+
 
 
 
 
 // VOLUME
 
-volume.oninput=()=>{
+volume.oninput = () => {
 
-video.volume =
-volume.value;
+
+    video.volume =
+    volume.value / 100;
+
 
 };
 
@@ -223,10 +227,30 @@ volume.value;
 
 
 
-mute.onclick=()=>{
+// MUTE
 
-video.muted =
-!video.muted;
+mute.onclick = () => {
+
+
+    video.muted =
+    !video.muted;
+
+
+    if(video.muted){
+
+        mute.innerHTML =
+        '<i data-lucide="volume-x"></i>';
+
+    }
+    else{
+
+        mute.innerHTML =
+        '<i data-lucide="volume-2"></i>';
+
+    }
+
+
+    lucide.createIcons();
 
 };
 
@@ -236,20 +260,25 @@ video.muted =
 
 // SPEED
 
-speed.onclick=()=>{
+speed.onclick = () => {
 
 
-if(video.playbackRate===1){
+    speedIndex++;
 
-video.playbackRate=2;
 
-}
+    if(speedIndex >= speeds.length){
 
-else{
+        speedIndex = 0;
 
-video.playbackRate=1;
+    }
 
-}
+
+    video.playbackRate =
+    speeds[speedIndex];
+
+
+    speedText.textContent =
+    speeds[speedIndex] + "x";
 
 
 };
@@ -258,23 +287,25 @@ video.playbackRate=1;
 
 
 
-// USER CONTROLLED FULLSCREEN
+// FULLSCREEN BUTTON
 
-fullscreen.onclick=()=>{
+fullscreen.onclick = () => {
 
 
-if(!document.fullscreenElement){
+    const player =
+    document.querySelector(".player");
 
-document.querySelector(".player")
-.requestFullscreen();
 
-}
+    if(!document.fullscreenElement){
 
-else{
+        player.requestFullscreen();
 
-document.exitFullscreen();
+    }
+    else{
 
-}
+        document.exitFullscreen();
+
+    }
 
 
 };
@@ -285,16 +316,21 @@ document.exitFullscreen();
 
 // PICTURE IN PICTURE
 
-pip.onclick=async()=>{
+pip.onclick = async () => {
 
 
-try{
+    try{
 
-await video.requestPictureInPicture();
+        await video.requestPictureInPicture();
 
-}
+    }
 
-catch(e){}
+    catch(error){
+
+        console.log(error);
+
+    }
+
 
 };
 
@@ -302,33 +338,62 @@ catch(e){}
 
 
 
-// KEYBOARD
+// KEYBOARD CONTROLS
 
 document.addEventListener(
 "keydown",
 (e)=>{
 
 
-if(e.code==="Space"){
+    if(e.code === "Space"){
 
-e.preventDefault();
+        e.preventDefault();
 
-play.click();
+        play.click();
 
-}
-
-
-if(e.key==="ArrowRight")
-video.currentTime+=5;
+    }
 
 
-if(e.key==="ArrowLeft")
-video.currentTime-=5;
+    if(e.key === "ArrowRight"){
+
+        video.currentTime += 5;
+
+    }
 
 
-if(e.key==="m")
-mute.click();
+    if(e.key === "ArrowLeft"){
+
+        video.currentTime -= 5;
+
+    }
 
 
-}
-);
+    if(e.key === "m"){
+
+        mute.click();
+
+    }
+
+
+    if(e.key === "f"){
+
+        fullscreen.click();
+
+    }
+
+
+});
+
+
+
+
+
+// SHOW ERRORS
+
+video.onerror = () => {
+
+    console.log(
+    "Video failed to load. Google Drive may be blocking streaming."
+    );
+
+};
