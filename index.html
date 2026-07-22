@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Player</title>
+<title>Video Player</title>
+
 <link rel="stylesheet" href="style.css">
 
 <script src="https://unpkg.com/lucide@latest"></script>
+
 </head>
 
 <body>
 
 <div class="player">
 
-<video id="video" autoplay></video>
+<video id="video" playsinline></video>
+
 
 <div class="controls">
 
@@ -19,32 +22,49 @@
 <div class="progress-filled"></div>
 </div>
 
-<div class="bar">
 
-<div>
+<div class="bottom">
+
+
+<div class="left">
+
 <button id="play">
 <i data-lucide="play"></i>
 </button>
+
 
 <button id="back">
 <i data-lucide="rotate-ccw"></i>
 </button>
 
+
 <button id="forward">
 <i data-lucide="rotate-cw"></i>
 </button>
 
-<span id="time">0:00 / 0:00</span>
+
+<span id="time">
+0:00 / 0:00
+</span>
+
 </div>
 
 
-<div>
+
+<div class="right">
+
 
 <button id="mute">
 <i data-lucide="volume-2"></i>
 </button>
 
-<input id="volume" type="range" min="0" max="1" step="0.01" value="1">
+
+<input id="volume"
+type="range"
+min="0"
+max="1"
+step="0.01"
+value="1">
 
 
 <button id="speed">
@@ -56,11 +76,19 @@
 <i data-lucide="picture-in-picture"></i>
 </button>
 
+
+<button id="fullscreen">
+<i data-lucide="maximize"></i>
+</button>
+
+
 </div>
+
 
 </div>
 
 </div>
+
 
 </div>
 
